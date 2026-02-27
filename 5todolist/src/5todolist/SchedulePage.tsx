@@ -10,6 +10,7 @@ import {
 import { Archive, X } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTodoStore, type TodoItem } from './todoStore'
+import { useAuthStore } from '../authetication/authStore'
 // 경로와 파일명은 실제 저장하신 것에 맞게 수정해주세요!
 import done0 from '../assets/done0.png' 
 import done1 from '../assets/done1.png'
@@ -157,6 +158,7 @@ function SwipeablePastActiveRow({
 export function SchedulePage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const todos = useTodoStore((state) => state.todos)
   const deletedTodos = useTodoStore((state) => state.deletedTodos)
   const toggleDone = useTodoStore((state) => state.toggleDone)
@@ -382,6 +384,14 @@ export function SchedulePage() {
         {selectedDateKey ? (
           <section className="calendar-selected-block" aria-live="polite">
             <h2 className="calendar-selected-title">{dayjs(selectedDateKey).format('YYYY.MM.DD')} 할 일</h2>
+            {isPastSelectedDate && !isAuthenticated ? (
+              <div className="calendar-login-prompt">
+                <p>과거 기록은 로그인 후 확인할 수 있어요.</p>
+                <button type="button" className="primary-button" onClick={() => navigate('/login')}>
+                  로그인하기
+                </button>
+              </div>
+            ) : (
             <ul className="calendar-selected-list">
               {selectedRecords.map((item) => (
                 <li key={item.id} className="calendar-selected-row">
@@ -428,6 +438,7 @@ export function SchedulePage() {
                 </li>
               ))}
             </ul>
+            )}
           </section>
         ) : null}
       </section>
