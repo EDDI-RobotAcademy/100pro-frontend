@@ -46,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: true, provider: 'email', user: data.user, token: data.access_token })
 
           import('../5todolist/todoStore').then(({ useTodoStore }) => {
+            useTodoStore.getState().setToken(data.access_token)
             useTodoStore.getState().migrateAndFetch()
           })
 
@@ -58,6 +59,7 @@ export const useAuthStore = create<AuthState>()(
       loginWithToken: (token, user, provider) => {
         set({ isAuthenticated: true, provider, user, token })
         import('../5todolist/todoStore').then(({ useTodoStore }) => {
+          useTodoStore.getState().setToken(token)
           useTodoStore.getState().migrateAndFetch()
         })
       },
@@ -94,6 +96,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: true, provider: 'kakao', user: data.user, token: data.access_token })
 
           import('../5todolist/todoStore').then(({ useTodoStore }) => {
+            useTodoStore.getState().setToken(data.access_token)
             useTodoStore.getState().migrateAndFetch()
           })
 

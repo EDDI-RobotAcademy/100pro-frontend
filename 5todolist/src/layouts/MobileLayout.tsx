@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -7,6 +8,8 @@ import {
   House,
   UserCircle2,
 } from 'lucide-react'
+import { useAuthStore } from '../authetication/authStore'
+import { useTodoStore } from '../5todolist/todoStore'
 
 const navItems = [
   { to: '/home', label: '투두', icon: House },
@@ -24,6 +27,16 @@ export function MobileLayout() {
   const { pathname } = useLocation()
   const isSplash = pathname === '/splash'
   const isLogin = pathname === '/login'
+
+  // 앱 시작 시 이미 로그인 상태라면 백엔드에서 데이터를 불러온다 (새로고침 복구)
+  useEffect(() => {
+    const { isAuthenticated, token } = useAuthStore.getState()
+    const { setToken, fetchFromBackend } = useTodoStore.getState()
+    if (isAuthenticated && token) {
+      setToken(token)
+      fetchFromBackend()
+    }
+  }, [])
 
   return (
     <div className="mobile-shell">
